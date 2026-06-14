@@ -3,16 +3,10 @@ package com.fomokiller
 import android.content.Context
 import android.content.SharedPreferences
 
-/**
- * FomoKiller modes:
- * - OFF      : Service is active but lets ALL notifications through
- * - KILL_ALL : Blocks ALL notifications from selected apps
- * - VIP_ONLY : Only lets through "impossible to block" system notifs + user-defined VIP apps
- */
 enum class FomoMode {
-    OFF,        // No filtering — all notifs pass
-    KILL_ALL,   // Block all notifs from blocked apps
-    VIP_ONLY    // Only calls, SMS, alarms + VIP apps pass through
+    OFF,
+    KILL_ALL,
+    VIP_ONLY
 }
 
 object AppState {
@@ -21,8 +15,6 @@ object AppState {
     private const val KEY_BLOCKED_APPS = "blocked_apps"
     private const val KEY_VIP_APPS = "vip_apps"
 
-    // System packages that are always allowed in VIP_ONLY mode
-    // (calls, SMS, alarms, system alerts)
     val ALWAYS_ALLOWED_PACKAGES = setOf(
         "com.android.phone",
         "com.android.incallui",
@@ -51,12 +43,10 @@ object AppState {
         get() = FomoMode.valueOf(prefs.getString(KEY_MODE, FomoMode.OFF.name) ?: FomoMode.OFF.name)
         set(value) = prefs.edit().putString(KEY_MODE, value.name).apply()
 
-    // Apps to block in KILL_ALL mode
     var blockedApps: Set<String>
         get() = prefs.getStringSet(KEY_BLOCKED_APPS, emptySet()) ?: emptySet()
         set(value) = prefs.edit().putStringSet(KEY_BLOCKED_APPS, value).apply()
 
-    // Apps to allow in VIP_ONLY mode (in addition to ALWAYS_ALLOWED)
     var vipApps: Set<String>
         get() = prefs.getStringSet(KEY_VIP_APPS, emptySet()) ?: emptySet()
         set(value) = prefs.edit().putStringSet(KEY_VIP_APPS, value).apply()
@@ -66,7 +56,6 @@ object AppState {
             FomoMode.OFF -> false
             FomoMode.KILL_ALL -> blockedApps.contains(packageName)
             FomoMode.VIP_ONLY -> {
-                // Block if NOT in always-allowed AND NOT in vip apps
                 !ALWAYS_ALLOWED_PACKAGES.contains(packageName) && !vipApps.contains(packageName)
             }
         }

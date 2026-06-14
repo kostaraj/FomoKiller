@@ -84,7 +84,7 @@
             android:id="@+id/btnKillAll"
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:text="Tout Bloquer"
+            android:text="Activé"
             android:textSize="17sp"
             style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -103,7 +103,7 @@
             android:id="@+id/btnVipOnly"
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:text="VIP Seulement"
+            android:text="Protégé"
             android:textSize="17sp"
             style="@style/Widget.FomoKiller.ModeButton" />
 

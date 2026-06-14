@@ -44,13 +44,6 @@
                 android:value="conversations,alerting" />
         </service>
 
-        <!-- App Picker Activity -->
-        <activity
-            android:name=".AppPickerActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.FomoKiller" />
-
         <!-- Boot receiver to restore service state -->
         <receiver
             android:name=".BootReceiver"
