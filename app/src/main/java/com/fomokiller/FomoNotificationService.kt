@@ -26,24 +26,29 @@ class FomoNotificationService : NotificationListenerService() {
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         AppState.init(applicationContext)
-        Log.d(TAG, "onCreate — service démarré")
+        Log.d(TAG, "onCreate — service créé")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        instance = null
-        Log.d(TAG, "onDestroy — service arrêté")
+        if (instance == this) instance = null
+        Log.d(TAG, "onDestroy — service détruit")
     }
 
     override fun onListenerConnected() {
         super.onListenerConnected()
         instance = this
-        AppState.init(applicationContext)
-        Log.d(TAG, "onListenerConnected — mode actuel: ${AppState.currentMode}")
+        Log.d(TAG, "onListenerConnected — prêt")
         sendBroadcast(Intent(ACTION_STATE_CHANGED))
         applyCurrentMode()
+    }
+
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        if (instance == this) instance = null
+        Log.d(TAG, "onListenerDisconnected")
+        sendBroadcast(Intent(ACTION_STATE_CHANGED))
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {

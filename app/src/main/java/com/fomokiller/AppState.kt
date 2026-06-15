@@ -52,11 +52,17 @@ object AppState {
         set(value) = prefs.edit().putStringSet(KEY_VIP_APPS, value).apply()
 
     fun shouldBlockNotification(packageName: String): Boolean {
+        if (ALWAYS_ALLOWED_PACKAGES.contains(packageName)) return false
+        
         return when (currentMode) {
             FomoMode.OFF -> false
-            FomoMode.KILL_ALL -> blockedApps.contains(packageName)
+            FomoMode.KILL_ALL -> {
+                // Mode ACTIVÉ : Ne bloque QUE les apps sélectionnées dans blockedApps
+                blockedApps.contains(packageName)
+            }
             FomoMode.VIP_ONLY -> {
-                !ALWAYS_ALLOWED_PACKAGES.contains(packageName) && !vipApps.contains(packageName)
+                // Mode PROTÉGÉ : Bloque TOUT sauf les apps VIP (vipApps)
+                !vipApps.contains(packageName)
             }
         }
     }

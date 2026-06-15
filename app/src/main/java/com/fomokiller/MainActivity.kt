@@ -1,5 +1,6 @@
 package com.fomokiller
 
+import android.content.ComponentName
 import android.content.pm.ApplicationInfo
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.service.notification.NotificationListenerService
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,22 +63,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnOff.setOnClickListener {
-            if (!isNotificationListenerEnabled()) { requestNotificationAccess(); return@setOnClickListener }
-            AppState.currentMode = FomoMode.OFF
-            FomoNotificationService.instance?.applyCurrentMode()
-            updateUI()
+            updateMode(FomoMode.OFF)
         }
         binding.btnKillAll.setOnClickListener {
-            if (!isNotificationListenerEnabled()) { requestNotificationAccess(); return@setOnClickListener }
-            AppState.currentMode = FomoMode.KILL_ALL
-            FomoNotificationService.instance?.applyCurrentMode()
-            updateUI()
+            updateMode(FomoMode.KILL_ALL)
         }
         binding.btnVipOnly.setOnClickListener {
-            if (!isNotificationListenerEnabled()) { requestNotificationAccess(); return@setOnClickListener }
-            AppState.currentMode = FomoMode.VIP_ONLY
-            FomoNotificationService.instance?.applyCurrentMode()
-            updateUI()
+            updateMode(FomoMode.VIP_ONLY)
         }
         binding.btnKillAll.setOnLongClickListener {
             showAppPickerSheet(mode = "blocked")
@@ -86,6 +79,25 @@ class MainActivity : AppCompatActivity() {
             showAppPickerSheet(mode = "vip")
             true
         }
+    }
+
+    private fun updateMode(mode: FomoMode) {
+        if (!isNotificationListenerEnabled()) {
+            requestNotificationAccess()
+            return
+        }
+        AppState.currentMode = mode
+        
+        val service = FomoNotificationService.instance
+        if (service != null) {
+            service.applyCurrentMode()
+        } else {
+            // Si le service n'est pas lié, on demande au système de le relancer
+            val componentName = ComponentName(this, FomoNotificationService::class.java)
+            NotificationListenerService.requestRebind(componentName)
+            Toast.makeText(this, "Initialisation du service...", Toast.LENGTH_SHORT).show()
+        }
+        updateUI()
     }
 
     private fun showAppPickerSheet(mode: String) {
@@ -154,8 +166,16 @@ class MainActivity : AppCompatActivity() {
         btnConfirm.setOnClickListener {
             if (mode == "blocked") AppState.blockedApps = selectedApps.toSet()
             else AppState.vipApps = selectedApps.toSet()
-            // Réappliquer immédiatement avec les nouvelles listes
-            FomoNotificationService.instance?.applyCurrentMode()
+            
+            // Réappliquer immédiatement
+            val service = FomoNotificationService.instance
+            if (service != null) {
+                service.applyCurrentMode()
+            } else {
+                val componentName = ComponentName(this, FomoNotificationService::class.java)
+                NotificationListenerService.requestRebind(componentName)
+            }
+
             updateUI()
             dialog.dismiss()
         }
@@ -218,14 +238,18 @@ class MainActivity : AppCompatActivity() {
 
         val blockedCount = AppState.blockedApps.size
         val vipCount = AppState.vipApps.size
+        
+        // Mode ACTIVÉ (KILL_ALL) : Bloque uniquement la liste noire
         binding.labelKillAll.text = if (blockedCount > 0)
             "$blockedCount app${if (blockedCount > 1) "s" else ""} bloquée${if (blockedCount > 1) "s" else ""}"
         else
-            "Appui long pour choisir les apps"
+            "Appui long pour choisir les apps à bloquer"
+            
+        // Mode PROTÉGÉ (VIP_ONLY) : Bloque tout sauf VIP
         binding.labelVipOnly.text = if (vipCount > 0)
-            "$vipCount app${if (vipCount > 1) "s" else ""} autorisée${if (vipCount > 1) "s" else ""} + système"
+            "Tout bloqué sauf $vipCount VIP + système"
         else
-            "Appui long pour ajouter des apps VIP"
+            "Appui long pour choisir les apps VIP"
     }
 
     private fun isNotificationListenerEnabled(): Boolean {

@@ -1,87 +1,90 @@
-# FomoKiller
+# 📱 FomoKiller
 
-Application Android ultra-minimaliste de contrôle des notifications.
-
-## 3 modes
-
-| Mode | Icône | Comportement |
-|------|-------|-------------|
-| **Désactivé** | — | Toutes les notifications passent normalement |
-| **Tout Bloquer** | 🔕 | Bloque les notifications des apps sélectionnées |
-| **VIP Seulement** | ⭐ | Ne laisse passer que les appels, SMS, alarmes + apps VIP |
-
-**Appui long** sur "Tout Bloquer" ou "VIP Seulement" pour choisir les apps concernées.
+**FomoKiller** est une application Android open-source conçue pour vous redonner le contrôle sur vos distractions. Marre d'être interrompu par des notifications inutiles tout en ayant peur de rater un appel important ? FomoKiller est là pour ça.
 
 ---
 
-## Compiler l'APK (5 minutes)
+## ✨ Caractéristiques
 
-### Prérequis
-- [Android Studio](https://developer.android.com/studio) (gratuit) — ou JDK 17+ si vous préférez la ligne de commande
+- **🛡️ 100% Local & Privé** : Pas de serveur, pas de collecte de données. Vos notifications restent sur votre téléphone.
+- **🚀 Sans fioritures** : Une interface minimaliste pour une efficacité maximale.
+- **⚙️ Trois modes de concentration** :
+  - **Désactivé** : La vie normale. Toutes les notifications passent.
+  - **Activé (Sélectif)** : Bloquez uniquement les coupables (réseaux sociaux, jeux, etc.). Tout le reste passe.
+  - **Protégé (VIP)** : Le mode concentration ultime. Tout est bloqué, sauf vos applications VIP (famille, travail, urgences) et les appels système.
 
-### Option A — Android Studio (recommandé)
+---
 
-1. Ouvrir Android Studio
-2. **File → Open** → sélectionner le dossier `fomokiller`
-3. Attendre la synchronisation Gradle (première fois : télécharge ~500MB de dépendances)
-4. **Build → Build Bundle(s) / APK(s) → Build APK(s)**
-5. L'APK est dans `app/build/outputs/apk/debug/app-debug.apk`
-6. Copier l'APK sur votre téléphone et installer (activer "Sources inconnues" si nécessaire)
+## 🛠️ Stack Technique
 
-### Option B — Ligne de commande
+- **Langage** : Kotlin
+- **Architecture** : Pattern Singleton pour l'état global (`AppState`) et Service lié.
+- **UI** : Material Design 3, ViewBinding, BottomSheet pour la sélection d'apps.
+- **Core** : `NotificationListenerService` pour l'interception chirurgicale des notifications.
+- **Stockage** : `SharedPreferences` pour une persistance ultra-légère.
 
-```bash
-cd fomokiller
-./gradlew assembleDebug
-# APK généré : app/build/outputs/apk/debug/app-debug.apk
-```
+---
 
-### Option C — GitHub Actions (sans Android Studio)
+## 📂 Structure du Projet
 
-Créer `.github/workflows/build.yml` :
-```yaml
-name: Build APK
-on: push
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - run: chmod +x gradlew && ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
-        with:
-          name: fomokiller-debug
-          path: app/build/outputs/apk/debug/*.apk
+```text
+fomokiller/
+├── app/
+│   ├── src/main/
+│   │   ├── java/com/fomokiller/
+│   │   │   ├── MainActivity.kt           # Interface principale & logique UI
+│   │   │   ├── FomoNotificationService.kt # Cœur du système (Interception)
+│   │   │   ├── AppState.kt                # Gestion des modes et préférences
+│   │   │   └── BootReceiver.kt            # Relance le service au démarrage
+│   │   └── res/
+│   │       ├── layout/                    # Layouts XML (Main, BottomSheet, Item)
+│   │       └── values/                    # Themes, Colors, Strings
+└── README.md
 ```
 
 ---
 
-## Première utilisation
+## 📥 Installation
 
-1. Installer l'APK
-2. Ouvrir FomoKiller
-3. Une bannière apparaît → appuyer sur un bouton → aller dans **Paramètres → Accès aux notifications** → activer FomoKiller
-4. Revenir dans l'app → choisir votre mode
+Vous pouvez installer FomoKiller de deux manières :
+
+### Option 1 : Téléchargement Direct (Recommandé)
+1. Allez dans l'onglet [Releases](https://github.com/votre-compte/fomokiller/releases).
+2. Téléchargez le dernier fichier `.apk`.
+3. Installez-le sur votre smartphone (autorisez les sources inconnues si nécessaire).
+
+### Option 2 : Compilation depuis les sources
+1. Clonez ce dépôt.
+2. Ouvrez le projet dans **Android Studio**.
+3. Compilez et installez (`./gradlew assembleDebug`).
+
+> **Note importante** : Pour fonctionner, l'application nécessite l'autorisation **"Accès aux notifications"**. L'application vous guidera vers les paramètres au premier lancement.
 
 ---
 
-## Architecture
+## 🔒 Confidentialité
 
-```
-FomoNotificationService   ← NotificationListenerService (noyau)
-AppState                  ← Singleton + SharedPreferences (mode, listes d'apps)
-MainActivity              ← UI 3 boutons
-AppPickerActivity         ← Sélection des apps à bloquer/autoriser
-BootReceiver              ← Restaure l'état au redémarrage
-```
+La confidentialité n'est pas une option, c'est la base :
+- **Zéro accès internet** : L'application n'a même pas la permission `INTERNET`.
+- **Zéro Cloud** : Aucune donnée ne quitte jamais votre appareil.
+- **Open Source** : Le code est transparent et auditable par tous.
 
-## Packages système toujours autorisés (mode VIP)
+---
 
-- Téléphone / appels entrants
-- SMS natifs
-- Horloge / alarmes
-- SystemUI / Paramètres
+## 🤝 Contribuer
+
+1. Forkez le projet.
+2. Créez votre branche (`git checkout -b feature/AmazingFeature`).
+3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
+4. Pushez sur la branche (`git push origin feature/AmazingFeature`).
+5. Ouvrez une Pull Request.
+
+---
+
+## 📄 Licence
+
+Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
+
+---
+
+*Développé avec ❤️ pour ceux qui veulent retrouver leur temps.*
