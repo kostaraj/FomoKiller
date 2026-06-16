@@ -1,122 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <LinearLayout
-        android:id="@+id/permissionBanner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/banner_bg"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="16dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="64dp">
+
+        <LinearLayout
+            android:id="@+id/permissionBanner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/banner_bg"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="16dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accès aux notifications requis"
+                android:textColor="@color/banner_text"
+                android:textSize="13sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appuyez sur un bouton pour ouvrir les paramètres"
+                android:textColor="@color/banner_text_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Accès aux notifications requis"
-            android:textColor="@color/banner_text"
-            android:textSize="13sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Appuyez sur un bouton pour ouvrir les paramètres"
-            android:textColor="@color/banner_text_secondary"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/appTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="fomokiller"
-        android:textSize="13sp"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:letterSpacing="0.12"
-        android:textAllCaps="true"
-        app:layout_constraintTop_toBottomOf="@id/permissionBanner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp" />
-
-    <LinearLayout
-        android:id="@+id/buttonsContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="32dp"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOff"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:text="Désactivé"
-            android:textSize="17sp"
-            style="@style/Widget.FomoKiller.ModeButton" />
-
-        <TextView
-            android:id="@+id/labelOff"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Toutes les notifications passent"
-            android:textSize="12sp"
+            android:text="fomokiller"
+            android:textSize="13sp"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:paddingHorizontal="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="28dp" />
+            android:letterSpacing="0.12"
+            android:textAllCaps="true"
+            app:layout_constraintTop_toBottomOf="@id/permissionBanner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="48dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnKillAll"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:text="Activé"
-            android:textSize="17sp"
-            style="@style/Widget.FomoKiller.ModeButton" />
-
-        <TextView
-            android:id="@+id/labelKillAll"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/buttonsContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Appui long pour choisir les apps"
-            android:textSize="12sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:paddingHorizontal="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="28dp" />
+            android:orientation="vertical"
+            android:paddingHorizontal="32dp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVipOnly"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:text="Protégé"
-            android:textSize="17sp"
-            style="@style/Widget.FomoKiller.ModeButton" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOff"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="Désactivé"
+                android:textSize="17sp"
+                style="@style/Widget.FomoKiller.ModeButton" />
 
-        <TextView
-            android:id="@+id/labelVipOnly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Appui long pour ajouter des apps VIP"
-            android:textSize="12sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:paddingHorizontal="4dp"
-            android:layout_marginTop="8dp" />
+            <TextView
+                android:id="@+id/labelOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Toutes les notifications passent"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:paddingHorizontal="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="28dp" />
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnKillAll"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="Activé"
+                android:textSize="17sp"
+                style="@style/Widget.FomoKiller.ModeButton" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/labelKillAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Appui long pour choisir les apps"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:paddingHorizontal="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="28dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVipOnly"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:text="Protégé"
+                android:textSize="17sp"
+                style="@style/Widget.FomoKiller.ModeButton" />
+
+            <TextView
+                android:id="@+id/labelVipOnly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Appui long pour ajouter des apps VIP"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:paddingHorizontal="4dp"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Inclusion du panneau de paramètres (BottomSheet persistante) -->
+    <include layout="@layout/bottom_sheet_settings" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

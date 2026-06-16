@@ -15,6 +15,7 @@ object AppState {
     private const val KEY_BLOCKED_APPS = "blocked_apps"
     private const val KEY_VIP_APPS = "vip_apps"
     private const val KEY_OPEN_COUNT = "open_count"
+    private const val KEY_REDISPLAY = "redisplay_notifications"
 
     val ALWAYS_ALLOWED_PACKAGES = setOf(
         "com.android.phone",
@@ -43,6 +44,10 @@ object AppState {
     var openCount: Int
         get() = prefs.getInt(KEY_OPEN_COUNT, 0)
         set(value) = prefs.edit().putInt(KEY_OPEN_COUNT, value).apply()
+
+    var reDisplayNotifications: Boolean
+        get() = prefs.getBoolean(KEY_REDISPLAY, true)
+        set(value) = prefs.edit().putBoolean(KEY_REDISPLAY, value).apply()
 
     var currentMode: FomoMode
         get() = FomoMode.valueOf(prefs.getString(KEY_MODE, FomoMode.OFF.name) ?: FomoMode.OFF.name)

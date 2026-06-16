@@ -1,5 +1,6 @@
 package com.fomokiller
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.pm.ApplicationInfo
 import android.content.BroadcastReceiver
@@ -21,15 +22,30 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fomokiller.databinding.ActivityMainBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.materialswitch.MaterialSwitch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var settingsBehavior: BottomSheetBehavior<View>
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Toast.makeText(this, "Permission refusée : les notifications ne pourront pas être restaurées", Toast.LENGTH_LONG).show()
+            findViewById<MaterialSwitch>(R.id.switchRedisplay)?.isChecked = false
+            AppState.reDisplayNotifications = false
+        }
+    }
 
     private val serviceStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -43,6 +59,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        setupSettingsPanel()
+        
         AppState.openCount++
         if (AppState.openCount % 6 == 0 && !isIgnoringBatteryOptimizations()) {
             showBatteryTipSheet()
@@ -50,6 +68,31 @@ class MainActivity : AppCompatActivity() {
         
         setupButtons()
         updateUI()
+    }
+
+    private fun setupSettingsPanel() {
+        val bottomSheet = findViewById<View>(R.id.settingsBottomSheet)
+        settingsBehavior = BottomSheetBehavior.from(bottomSheet)
+        
+        val header = findViewById<View>(R.id.settingsHeader)
+        header.setOnClickListener {
+            if (settingsBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
+                settingsBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            } else {
+                settingsBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        val switchRedisplay = findViewById<MaterialSwitch>(R.id.switchRedisplay)
+        switchRedisplay.isChecked = AppState.reDisplayNotifications
+        switchRedisplay.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+            AppState.reDisplayNotifications = isChecked
+        }
     }
 
     private fun isIgnoringBatteryOptimizations(): Boolean {

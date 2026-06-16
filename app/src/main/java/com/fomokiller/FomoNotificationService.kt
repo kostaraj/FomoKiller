@@ -5,6 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -115,11 +119,15 @@ class FomoNotificationService : NotificationListenerService() {
                         val pkg = sbn.packageName ?: continue
                         if (pkg == packageName) continue
                         
+                        // Si déjà en mémoire, on ne traite pas à nouveau
+                        if (heldNotifications.containsKey(sbn.key)) continue
+
                         if (AppState.shouldBlockNotification(pkg)) {
-                            Log.d(TAG, "Blocage d'une notif existante: $pkg")
+                            Log.d(TAG, "Interception notif: $pkg")
                             holdAndCancel(sbn)
                         }
                     }
+                    // Relâche ce qui n'est plus censé être bloqué suite au changement de mode
                     releaseNowAllowed()
                 }
             }
@@ -150,8 +158,13 @@ class FomoNotificationService : NotificationListenerService() {
         Log.d(TAG, "Relâchement total: ${heldNotifications.size} notifications")
         val toRelease = heldNotifications.values.toList()
         heldNotifications.clear()
-        for (held in toRelease) {
-            repostNotification(held)
+        
+        if (AppState.reDisplayNotifications) {
+            for (held in toRelease) {
+                repostNotification(held)
+            }
+        } else {
+            Log.d(TAG, "Restauration désactivée par les paramètres")
         }
     }
 
@@ -162,7 +175,7 @@ class FomoNotificationService : NotificationListenerService() {
         Log.d(TAG, "Relâchement partiel: ${keysToRemove.size} notifications")
         for (key in keysToRemove) {
             val held = heldNotifications.remove(key)
-            if (held != null) {
+            if (held != null && AppState.reDisplayNotifications) {
                 repostNotification(held)
             }
         }
@@ -171,7 +184,20 @@ class FomoNotificationService : NotificationListenerService() {
     private fun repostNotification(held: HeldNotif) {
         try {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val pm = packageManager
             
+            // Récupération des infos de l'app d'origine pour l'identité
+            val appLabel: String
+            val appIcon: Drawable
+            try {
+                val appInfo = pm.getApplicationInfo(held.packageName, 0)
+                appLabel = pm.getApplicationLabel(appInfo).toString()
+                appIcon = pm.getApplicationIcon(appInfo)
+            } catch (e: Exception) {
+                repostSimple(held) // Fallback si l'app a été désinstallée entre temps
+                return
+            }
+
             val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Notification.Builder(this, CHANNEL_ID)
             } else {
@@ -180,23 +206,61 @@ class FomoNotificationService : NotificationListenerService() {
             }
 
             val extras = held.notification.extras
-            // Récupération sécurisée du titre et du texte
-            val title = extras?.getCharSequence(Notification.EXTRA_TITLE) ?: "Notification restaurée"
-            val text = extras?.getCharSequence(Notification.EXTRA_TEXT) ?: held.packageName
+            val title = extras?.getCharSequence(Notification.EXTRA_TITLE) ?: appLabel
+            val text = extras?.getCharSequence(Notification.EXTRA_TEXT) ?: ""
 
             builder.setContentTitle(title)
                 .setContentText(text)
-                // Utilisation de l'icône de l'app pour garantir la visibilité sur toutes les versions
-                .setSmallIcon(R.mipmap.ic_launcher) 
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(drawableToBitmap(appIcon)) // Icône de l'app d'origine
+                .setSubText(appLabel) // Affiche le nom de l'app source en haut
                 .setContentIntent(held.notification.contentIntent)
+                .setDeleteIntent(held.notification.deleteIntent)
                 .setWhen(held.notification.`when`)
                 .setShowWhen(true)
                 .setAutoCancel(true)
+                .setGroup("fomo_group_${held.packageName}") // Grouper par app d'origine
+
+            // Transfert des boutons d'actions (Répondre, Like, etc.)
+            held.notification.actions?.forEach { action ->
+                builder.addAction(action)
+            }
 
             nm.notify(held.tag, held.id, builder.build())
-            Log.d(TAG, "Notification renvoyée avec succès: ${held.packageName}")
+            Log.d(TAG, "Notification relâchée avec identité: ${held.packageName}")
         } catch (e: Exception) {
-            Log.e(TAG, "Erreur lors du renvoi de la notification: ${e.message}")
+            Log.e(TAG, "Erreur lors du renvoi complet: ${e.message}")
+            repostSimple(held)
         }
+    }
+
+    private fun repostSimple(held: HeldNotif) {
+        try {
+            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Notification.Builder(this, CHANNEL_ID)
+            } else {
+                @Suppress("DEPRECATION")
+                Notification.Builder(this)
+            }
+            builder.setContentTitle(held.packageName)
+                .setContentText("Notification restaurée")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
+            nm.notify(held.tag, held.id, builder.build())
+        } catch (e: Exception) { /* Echec total */ }
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap {
+        if (drawable is BitmapDrawable) return drawable.bitmap
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth.coerceAtLeast(1),
+            drawable.intrinsicHeight.coerceAtLeast(1),
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 }
