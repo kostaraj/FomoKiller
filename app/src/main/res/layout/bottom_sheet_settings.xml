@@ -12,7 +12,6 @@
     app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <!-- Header cliquable (optionnel si geste plein écran) -->
     <LinearLayout
         android:id="@+id/settingsHeader"
         android:layout_width="match_parent"
@@ -26,6 +25,7 @@
             android:layout_marginTop="12dp"
             android:background="#40808080"
             android:backgroundTint="?attr/colorOnSurfaceVariant" />
+
     </LinearLayout>
 
     <View
@@ -63,15 +63,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Ré-afficher les alertes bloquées en fin de session"
+                    android:text="RÃ©-afficher les alertes bloquÃ©es en fin de session"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="13sp" />
+
             </LinearLayout>
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/switchRedisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -121,6 +123,7 @@
                     android:text="@string/mode_vip_only" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
+
         </LinearLayout>
 
         <TextView
