@@ -27,14 +27,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AccÃ¨s aux notifications requis"
+                android:text="@string/banner_permission_title"
                 android:textColor="@color/banner_text"
                 android:textSize="13sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Appuyez sur un bouton pour ouvrir les paramÃ¨tres"
+                android:text="@string/banner_permission_desc"
                 android:textColor="@color/banner_text_secondary"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />
@@ -79,7 +79,7 @@
                 android:id="@+id/labelOff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toutes les notifications passent"
+                android:text="@string/mode_off_desc"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"
@@ -98,7 +98,7 @@
                 android:id="@+id/labelKillAll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Appui long pour choisir les apps"
+                android:text="@string/mode_kill_all_desc"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"
@@ -117,7 +117,7 @@
                 android:id="@+id/labelVipOnly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Appui long pour ajouter des apps VIP"
+                android:text="@string/mode_vip_only_desc"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:paddingHorizontal="4dp"
@@ -127,7 +127,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Scrim pour l'assombrissement -->
+    <!-- Scrim -->
     <View
         android:id="@+id/settingsScrim"
         android:layout_width="match_parent"
@@ -136,7 +136,6 @@
         android:alpha="0"
         android:visibility="gone" />
 
-    <!-- Inclusion du panneau de paramÃ¨tres (BottomSheet persistante) -->
     <include layout="@layout/bottom_sheet_settings" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
