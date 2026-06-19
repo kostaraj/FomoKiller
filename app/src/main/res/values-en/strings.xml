@@ -5,9 +5,20 @@
     <string name="mode_kill_all">Enabled</string>
     <string name="mode_vip_only">Protected</string>
 
+    <!-- Mode descriptions -->
+    <string name="mode_off_desc">All notifications go through</string>
+    <string name="mode_kill_all_desc">Long press to choose apps to block</string>
+    <string name="mode_vip_only_desc">Long press to add VIP apps</string>
+
+    <!-- Permission banner -->
+    <string name="banner_permission_title">Notification access required</string>
+    <string name="banner_permission_desc">Tap a button to open settings</string>
+
     <!-- Settings -->
     <string name="settings_tile_mode_title">Shortcut Mode</string>
     <string name="settings_tile_mode_desc">The mode that will be activated via the notification tile</string>
+    <string name="settings_redisplay_title">Restore notifications</string>
+    <string name="settings_redisplay_desc">Re-display blocked alerts at end of session</string>
 
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>
