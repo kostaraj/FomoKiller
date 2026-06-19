@@ -55,7 +55,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Restaurer les notifications"
+                    android:text="@string/settings_redisplay_title"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp" />
 
@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="RÃ©-afficher les alertes bloquÃ©es en fin de session"
+                    android:text="@string/settings_redisplay_desc"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="13sp" />
 
