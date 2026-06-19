@@ -27,17 +27,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Accès aux notifications requis"
+                android:text="AccÃ¨s aux notifications requis"
                 android:textColor="@color/banner_text"
                 android:textSize="13sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Appuyez sur un bouton pour ouvrir les paramètres"
+                android:text="Appuyez sur un bouton pour ouvrir les paramÃ¨tres"
                 android:textColor="@color/banner_text_secondary"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />
+
         </LinearLayout>
 
         <TextView
@@ -70,7 +71,7 @@
                 android:id="@+id/btnOff"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Désactivé"
+                android:text="@string/mode_off"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -89,7 +90,7 @@
                 android:id="@+id/btnKillAll"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Activé"
+                android:text="@string/mode_kill_all"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -108,7 +109,7 @@
                 android:id="@+id/btnVipOnly"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:text="Protégé"
+                android:text="@string/mode_vip_only"
                 android:textSize="17sp"
                 style="@style/Widget.FomoKiller.ModeButton" />
 
@@ -135,7 +136,7 @@
         android:alpha="0"
         android:visibility="gone" />
 
-    <!-- Inclusion du panneau de paramètres (BottomSheet persistante) -->
+    <!-- Inclusion du panneau de paramÃ¨tres (BottomSheet persistante) -->
     <include layout="@layout/bottom_sheet_settings" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
