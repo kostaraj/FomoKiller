@@ -24,4 +24,22 @@
     <string name="tile_label">FomoKiller</string>
     <string name="tile_subtitle_active">Mode: %s</string>
     <string name="tile_subtitle_off">Disabled</string>
+
+    <!-- Toasts -->
+    <string name="toast_permission_denied">Permission denied: notifications cannot be restored</string>
+    <string name="toast_service_init">Initializing service…</string>
+    <string name="toast_grant_notification_access">Please grant notification access</string>
+    <string name="toast_error">Error: %s</string>
+
+    <!-- App picker sheet -->
+    <string name="picker_title_blocked">Apps to block</string>
+    <string name="picker_title_vip">VIP apps</string>
+    <string name="picker_subtitle_blocked">Blocked in Enabled mode</string>
+    <string name="picker_subtitle_vip">Allowed in Protected mode</string>
+    <string name="picker_confirm">Confirm</string>
+    <string name="picker_confirm_count">Confirm (%d)</string>
+
+    <!-- Dynamic labels -->
+    <string name="label_blocked_count">%d app(s) blocked</string>
+    <string name="label_vip_count">All blocked except %d VIP + system</string>
 </resources>
