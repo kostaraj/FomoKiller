@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (!isGranted) {
-            Toast.makeText(this, "Permission refusée : les notifications ne pourront pas être restaurées", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.toast_permission_denied), Toast.LENGTH_LONG).show()
             findViewById<MaterialSwitch>(R.id.switchRedisplay)?.isChecked = false
             AppState.reDisplayNotifications = false
         }
@@ -63,15 +63,15 @@ class MainActivity : AppCompatActivity() {
         AppState.init(applicationContext)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
         setupSettingsPanel()
         setupGestureDetector()
-        
+
         AppState.openCount++
         if (AppState.openCount % 6 == 0 && !isIgnoringBatteryOptimizations()) {
             showBatteryTipSheet()
         }
-        
+
         setupButtons()
         updateUI()
     }
@@ -92,8 +92,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        // Le geste ne fonctionne que si aucune autre modale n'est ouverte
-        // (BottomSheetDialog n'expose pas facilement son état, mais on peut vérifier si settings est caché)
         if (settingsBehavior.state == BottomSheetBehavior.STATE_HIDDEN || settingsBehavior.state == BottomSheetBehavior.STATE_SETTLING) {
             gestureDetector.onTouchEvent(ev)
         }
@@ -105,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         val scrim = findViewById<View>(R.id.settingsScrim)
         settingsBehavior = BottomSheetBehavior.from(bottomSheet)
         settingsBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        
+
         settingsBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
@@ -116,10 +114,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // slideOffset va de -1 (caché) à 1 (étendu). On veut 0 à 1.
-                // Ici avec hideable=true et peek=0, 0 est "collapsé/caché" et 1 est étendu.
                 val alpha = slideOffset.coerceIn(0f, 1f)
-                scrim.alpha = alpha * 0.6f // Max 60% d'opacité
+                scrim.alpha = alpha * 0.6f
                 scrim.visibility = if (alpha > 0) View.VISIBLE else View.GONE
             }
         })
@@ -139,11 +135,10 @@ class MainActivity : AppCompatActivity() {
             AppState.reDisplayNotifications = isChecked
         }
 
-        // Configuration du mode de raccourci (Segmented Button)
         val prefs = getSharedPreferences("fomokiller_prefs", Context.MODE_PRIVATE)
         val toggleGroup = findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggleGroupTileMode)
         val initialMode = prefs.getString("tile_target_mode", "KILL_ALL") ?: "KILL_ALL"
-        
+
         if (initialMode == "KILL_ALL") {
             toggleGroup.check(R.id.btnTileKillAll)
         } else {
@@ -164,11 +159,10 @@ class MainActivity : AppCompatActivity() {
         val textAbout = findViewById<TextView>(R.id.textAbout)
         try {
             val content = assets.open("about.md").bufferedReader().use { it.readText() }
-            // Conversion simple Markdown vers HTML (on gère les liens [text](url))
             val htmlContent = content
                 .replace(Regex("\\[(.*?)\\]\\((.*?)\\)"), "<a href=\"$2\">$1</a>")
                 .replace("\n", "<br/>")
-            
+
             textAbout.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT)
             } else {
@@ -254,15 +248,14 @@ class MainActivity : AppCompatActivity() {
             return
         }
         AppState.currentMode = mode
-        
+
         val service = FomoNotificationService.instance
         if (service != null) {
             service.applyCurrentMode()
         } else {
-            // Si le service n'est pas lié, on demande au système de le relancer
             val componentName = ComponentName(this, FomoNotificationService::class.java)
             NotificationListenerService.requestRebind(componentName)
-            Toast.makeText(this, "Initialisation du service...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_service_init), Toast.LENGTH_SHORT).show()
         }
         updateUI()
     }
@@ -279,8 +272,8 @@ class MainActivity : AppCompatActivity() {
         val btnCancel = sheetView.findViewById<com.google.android.material.button.MaterialButton>(R.id.sheetBtnCancel)
         val btnConfirm = sheetView.findViewById<com.google.android.material.button.MaterialButton>(R.id.sheetBtnConfirm)
 
-        title.text = if (mode == "blocked") "Apps à bloquer" else "Apps VIP"
-        subtitle.text = if (mode == "blocked") "Bloquées en mode Activé" else "Autorisées en mode Protégé"
+        title.text = if (mode == "blocked") getString(R.string.picker_title_blocked) else getString(R.string.picker_title_vip)
+        subtitle.text = if (mode == "blocked") getString(R.string.picker_subtitle_blocked) else getString(R.string.picker_subtitle_vip)
 
         val selectedApps = mutableSetOf<String>().apply {
             addAll(if (mode == "blocked") AppState.blockedApps else AppState.vipApps)
@@ -288,7 +281,7 @@ class MainActivity : AppCompatActivity() {
 
         val allApps = mutableListOf<AppInfo>()
         val adapter = AppSheetAdapter(allApps, selectedApps) { count ->
-            btnConfirm.text = if (count > 0) "Confirmer ($count)" else "Confirmer"
+            btnConfirm.text = if (count > 0) getString(R.string.picker_confirm_count, count) else getString(R.string.picker_confirm)
         }
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
@@ -319,12 +312,12 @@ class MainActivity : AppCompatActivity() {
                     loading.visibility = View.GONE
                     recycler.visibility = View.VISIBLE
                     val count = selectedApps.size
-                    btnConfirm.text = if (count > 0) "Confirmer ($count)" else "Confirmer"
+                    btnConfirm.text = if (count > 0) getString(R.string.picker_confirm_count, count) else getString(R.string.picker_confirm)
                 }
             } catch (e: Exception) {
                 runOnUiThread {
                     loading.visibility = View.GONE
-                    Toast.makeText(this, "Erreur: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.toast_error, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }.start()
@@ -333,8 +326,7 @@ class MainActivity : AppCompatActivity() {
         btnConfirm.setOnClickListener {
             if (mode == "blocked") AppState.blockedApps = selectedApps.toSet()
             else AppState.vipApps = selectedApps.toSet()
-            
-            // Réappliquer immédiatement
+
             val service = FomoNotificationService.instance
             if (service != null) {
                 service.applyCurrentMode()
@@ -405,18 +397,16 @@ class MainActivity : AppCompatActivity() {
 
         val blockedCount = AppState.blockedApps.size
         val vipCount = AppState.vipApps.size
-        
-        // Mode ACTIVÉ (KILL_ALL) : Bloque uniquement la liste noire
+
         binding.labelKillAll.text = if (blockedCount > 0)
-            "$blockedCount app${if (blockedCount > 1) "s" else ""} bloquée${if (blockedCount > 1) "s" else ""}"
+            getString(R.string.label_blocked_count, blockedCount)
         else
-            "Appui long pour choisir les apps à bloquer"
-            
-        // Mode PROTÉGÉ (VIP_ONLY) : Bloque tout sauf VIP
+            getString(R.string.mode_kill_all_desc)
+
         binding.labelVipOnly.text = if (vipCount > 0)
-            "Tout bloqué sauf $vipCount VIP + système"
+            getString(R.string.label_vip_count, vipCount)
         else
-            "Appui long pour choisir les apps VIP"
+            getString(R.string.mode_vip_only_desc)
     }
 
     private fun isNotificationListenerEnabled(): Boolean {
@@ -425,7 +415,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestNotificationAccess() {
-        Toast.makeText(this, "Autorisez l'accès aux notifications", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.toast_grant_notification_access), Toast.LENGTH_LONG).show()
         startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
     }
 }
