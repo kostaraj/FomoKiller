@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FomoKiller</string>
-    <string name="mode_off">Désactivé</string>
-    <string name="mode_kill_all">Activé</string>
-    <string name="mode_vip_only">Protégé</string>
+    <string name="mode_off">Disabled</string>
+    <string name="mode_kill_all">Enabled</string>
+    <string name="mode_vip_only">Protected</string>
 
     <!-- Mode descriptions -->
-    <string name="mode_off_desc">Toutes les notifications passent</string>
-    <string name="mode_kill_all_desc">Appui long pour choisir les apps à bloquer</string>
-    <string name="mode_vip_only_desc">Appui long pour ajouter des apps VIP</string>
+    <string name="mode_off_desc">All notifications go through</string>
+    <string name="mode_kill_all_desc">Long press to choose apps to block</string>
+    <string name="mode_vip_only_desc">Long press to add VIP apps</string>
 
     <!-- Permission banner -->
-    <string name="banner_permission_title">Accès aux notifications requis</string>
-    <string name="banner_permission_desc">Appuyez sur un bouton pour ouvrir les paramètres</string>
+    <string name="banner_permission_title">Notification access required</string>
+    <string name="banner_permission_desc">Tap a button to open settings</string>
 
     <!-- Settings -->
-    <string name="settings_tile_mode_title">Mode du raccourci</string>
-    <string name="settings_tile_mode_desc">Le mode qui sera activé via la tuile de notification</string>
-    <string name="settings_redisplay_title">Restaurer les notifications</string>
-    <string name="settings_redisplay_desc">Ré-afficher les alertes bloquées en fin de session</string>
+    <string name="settings_tile_mode_title">Shortcut Mode</string>
+    <string name="settings_tile_mode_desc">The mode that will be activated via the notification tile</string>
+    <string name="settings_redisplay_title">Restore notifications</string>
+    <string name="settings_redisplay_desc">Re-display blocked alerts at end of session</string>
 
     <!-- Quick Settings Tile -->
     <string name="tile_label">FomoKiller</string>
-    <string name="tile_subtitle_active">Mode : %s</string>
-    <string name="tile_subtitle_off">Désactivé</string>
+    <string name="tile_subtitle_active">Mode: %s</string>
+    <string name="tile_subtitle_off">Disabled</string>
+
+    <!-- Toasts -->
+    <string name="toast_permission_denied">Permission denied: notifications cannot be restored</string>
+    <string name="toast_service_init">Initializing service…</string>
+    <string name="toast_grant_notification_access">Please grant notification access</string>
+    <string name="toast_error">Error: %s</string>
+
+    <!-- App picker sheet -->
+    <string name="picker_title_blocked">Apps to block</string>
+    <string name="picker_title_vip">VIP apps</string>
+    <string name="picker_subtitle_blocked">Blocked in Enabled mode</string>
+    <string name="picker_subtitle_vip">Allowed in Protected mode</string>
+    <string name="picker_confirm">Confirm</string>
+    <string name="picker_confirm_count">Confirm (%d)</string>
+
+    <!-- Dynamic labels -->
+    <string name="label_blocked_count">%d app(s) blocked</string>
+    <string name="label_vip_count">All blocked except %d VIP + system</string>
 </resources>
