@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FomoKiller</string>
+    <string name="mode_off">Isključeno</string>
+    <string name="mode_kill_all">Uključeno</string>
+    <string name="mode_vip_only">Zaštićeno</string>
+    <!-- Mode descriptions -->
+    <string name="mode_off_desc">Sve notifikacije prolaze</string>
+    <string name="mode_kill_all_desc">Dugi pritisak za odabir aplikacija za blokiranje</string>
+    <string name="mode_vip_only_desc">Dugi pritisak za dodavanje VIP aplikacija</string>
+    <!-- Permission banner -->
+    <string name="banner_permission_title">Potreban pristup notifikacijama</string>
+    <string name="banner_permission_desc">Pritisnite dugme da otvorite podešavanja</string>
+    <!-- Settings -->
+    <string name="settings_tile_mode_title">Režim prečice</string>
+    <string name="settings_tile_mode_desc">Režim koji će biti aktiviran putem pločice za notifikacije</string>
+    <string name="settings_redisplay_title">Povrati notifikacije</string>
+    <string name="settings_redisplay_desc">Ponovo prikaži blokirane obaveštenja na kraju sesije</string>
+
+    <!-- Quick Settings Tile -->
+    <string name="tile_label">FomoKiller</string>
+    <string name="tile_subtitle_active">Režim: %s</string>
+    <string name="tile_subtitle_off">Isključeno</string>
+
+    <!-- Toasts -->
+    <string name="toast_permission_denied">Dozvola odbijena: notifikacije neće moći biti vraćene</string>
+    <string name="toast_service_init">Pokretanje servisa…</string>
+    <string name="toast_grant_notification_access">Molimo dozvolite pristup notifikacijama</string>
+    <string name="toast_error">Greška: %s</string>
+
+    <!-- App picker sheet -->
+    <string name="picker_title_blocked">Aplikacije za blokiranje</string>
+    <string name="picker_title_vip">VIP aplikacije</string>
+    <string name="picker_subtitle_blocked">Blokirane u uključenom režimu</string>
+    <string name="picker_subtitle_vip">Dozvoljene u zaštićenom režimu</string>
+    <string name="picker_confirm">Potvrdi</string>
+    <string name="picker_confirm_count">Potvrdi (%d)</string>
+    <!-- Dynamic labels -->
+    <string name="label_blocked_count">%d aplikacija blokirano</string>
+    <string name="label_vip_count">Sve blokirano osim %d VIP + sistem</string>
+</resources>
